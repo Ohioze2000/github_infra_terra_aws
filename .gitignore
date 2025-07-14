@@ -1,0 +1,5 @@
+# terraform local dir.
+.terraform/*
+
+# tfvars files may contain sensitive data
+terraform.tfvars
