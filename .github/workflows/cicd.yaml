@@ -53,15 +53,9 @@ jobs:
         # It's good practice to stick to one method. Let's remove this line for clarity,
         # as TF_API_TOKEN at the job level will configure the CLI.
         # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-    # --- DEBUGGING STEP 1: Verify Environment Variables in GitHub Actions Runner (Keep this temporarily!) ---
-    - name: Debug: List All Environment Variables
-      run: |
-        echo "All environment variables available to the GitHub Actions runner (excluding highly sensitive ones):"
-        env | grep -v 'AWS_SECRET_ACCESS_KEY' | grep -v 'SLACK_WEBHOOK_URL' | grep -v 'TF_API_TOKEN' | grep -v 'PUBLIC_KEY_LOCATION'
-        echo "--- End All Env Var Debug ---"
-      # IMPORTANT: Remove this step after successful debugging for security.
+        
     - name: Terraform Init
+      run: Terraform init
     
       # All TF_VAR_ and AWS credentials are now at the job level, no need for step-level env
     - name: Terraform Plan
