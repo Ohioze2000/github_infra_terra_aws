@@ -1,3 +1,4 @@
+#
 /*output "public_ip"{
 	value = [for instance in aws_instance.my-server : instance.public_ip]
 }*/ 

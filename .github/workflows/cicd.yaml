@@ -1,3 +1,4 @@
+#
 name: 'GitOps-Native AWS Web Stack with Terraform Cloud & Slack Integration'
 
 on:
@@ -37,10 +38,7 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
-
-    - name: Debug env var
-      run: |
-        echo "instance_type is $TF_VAR_instance_type"
+    #
       env:
         TF_VAR_instance_type: ${{ secrets.TF_VAR_INSTANCE_TYPE }}
         TF_VAR_vpc_cidr_block: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}

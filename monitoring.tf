@@ -1,3 +1,4 @@
+#
 #SNS Topic for CloudWatch Alarms ---
 resource "aws_sns_topic" "cloudwatch_alarms_topic" {
   name = "${var.env_prefix}-cloudwatch-alarms"
