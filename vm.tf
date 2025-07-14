@@ -11,35 +11,35 @@ locals {
 }
 
 resource "aws_vpc" "my-vpc" {
-    cidr_block = var.VPC_CIDR_BLOCK
+    cidr_block = var.vpc_cidr_block
     enable_dns_hostnames = true
     enable_dns_support = true
 
     tags ={
-        Name = "${var.ENV_PREFIX}-vpc"
+        Name = "${var.env_prefix}-vpc"
     }
 }
 
 resource "aws_subnet" "my-public-subnet-1" {
     count             = var.az_count
-    cidr_block = cidrsubnet(var.VPC_CIDR_BLOCK, 8, count.index)
+    cidr_block = cidrsubnet(var.vpc_cidr_block, 8, count.index)
     vpc_id = aws_vpc.my-vpc.id
     availability_zone   = local.selected_azs[count.index] # Use the filtered list of AZs
     map_public_ip_on_launch = true
 
     tags = {
-        Name = "${var.ENV_PREFIX}-pub-subnet-${count.index + 1}"
+        Name = "${var.env_prefix}-pub-subnet-${count.index + 1}"
     }
 }
 
 resource "aws_subnet" "my-private-subnet-1" {
     count             = var.az_count # Use az_count here too
-    cidr_block = cidrsubnet(var.VPC_CIDR_BLOCK, 8, count.index + var.az_count)
+    cidr_block = cidrsubnet(var.vpc_cidr_block, 8, count.index + var.az_count)
     vpc_id = aws_vpc.my-vpc.id
     availability_zone   = local.selected_azs[count.index] # Use the filtered list of AZs
 
     tags = {
-        Name = "${var.ENV_PREFIX}-priv-subnet-${count.index + 1}"
+        Name = "${var.env_prefix}-priv-subnet-${count.index + 1}"
     }
 }
 
@@ -47,7 +47,7 @@ resource "aws_internet_gateway" "my-igw" {
     vpc_id = aws_vpc.my-vpc.id
 
     tags = {
-        Name = "${var.ENV_PREFIX}-igw"
+        Name = "${var.env_prefix}-igw"
     }
 }
 
@@ -59,7 +59,7 @@ resource "aws_route_table" "my-rtb" {
         }
     
     tags = {
-        Name = "${var.ENV_PREFIX}-rtb"
+        Name = "${var.env_prefix}-rtb"
     }
 }
 
@@ -81,7 +81,7 @@ resource "aws_nat_gateway" "my-nat" {
   depends_on    = [aws_internet_gateway.my-igw]
 
   tags = {
-    Name = "${var.ENV_PREFIX}-nat-gw"
+    Name = "${var.env_prefix}-nat-gw"
   }
 }
 
@@ -95,7 +95,7 @@ resource "aws_route_table" "my-private-rtb" {
   }
 
   tags = {
-    Name = "${var.ENV_PREFIX}-private-rt"
+    Name = "${var.env_prefix}-private-rt"
   }
 }
 
@@ -126,7 +126,7 @@ resource "aws_security_group" "ec2-sg" {
         }
 
     tags = {
-        Name = "${var.ENV_PREFIX}-ec2_sg"
+        Name = "${var.env_prefix}-ec2_sg"
     }    
 }
 
@@ -158,7 +158,7 @@ resource "aws_security_group" "alb-sg" {
   }
 
   tags = {
-     Name = "${var.ENV_PREFIX}-alb-sg"
+     Name = "${var.env_prefix}-alb-sg"
   }
 }
 
@@ -172,20 +172,20 @@ resource "aws_lb_target_group_attachment" "web_attach" {
 
 # Create ALB
 resource "aws_lb" "app-alb" {
-  name               = "${var.ENV_PREFIX}-App-ALB"
+  name               = "${var.env_prefix}-App-ALB"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-sg.id]
   subnets            = aws_subnet.my-public-subnet-1[*].id
 
   tags = {
-    Name = "${var.ENV_PREFIX}-App-ALB"
+    Name = "${var.env_prefix}-App-ALB"
   }
 }
 
 # Create Target Group and Listener
 resource "aws_lb_target_group" "app-tg" {
-  name     = "${var.ENV_PREFIX}-app-tg"
+  name     = "${var.env_prefix}-app-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id = aws_vpc.my-vpc.id
@@ -202,7 +202,7 @@ resource "aws_lb_target_group" "app-tg" {
   }
 
   tags = {
-    Name = "${var.ENV_PREFIX}-App-TG"
+    Name = "${var.env_prefix}-App-TG"
   }
 }
 
@@ -236,7 +236,7 @@ resource "aws_lb_listener" "https" {
   }
 
   tags = {
-    Name = "${var.ENV_PREFIX}-http-listener"
+    Name = "${var.env_prefix}-http-listener"
   }
 }
 
@@ -248,7 +248,7 @@ resource "aws_route53_zone" "primary" {
 # Route 53 Hosted Zone
 resource "aws_route53_record" "www" {
   zone_id = aws_route53_zone.primary.zone_id
-  name    = var.DOMAIN_NAME
+  name    = var.domain_name
   type    = "A"
 
   alias {
@@ -261,7 +261,7 @@ resource "aws_route53_record" "www" {
 # Alias record for the www subdomain
 resource "aws_route53_record" "www_alias" {
   zone_id = aws_route53_zone.primary.zone_id
-  name    = "www.${var.DOMAIN_NAME}" # The www subdomain
+  name    = "www.${var.domain_name}" # The www subdomain
   type    = "A"
   alias {
     name                   = aws_lb.app-alb.dns_name
@@ -304,7 +304,7 @@ resource "aws_acm_certificate" "cert" {
   }
 
   tags = {
-    Name = "SSL certificate for ${var.DOMAIN_NAME}"
+    Name = "SSL certificate for ${var.domain_name}"
   }
 }
 
@@ -323,12 +323,12 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 
 resource "aws_key_pair" "ssh-key" {
     key_name = "server-key"
-    public_key = var.PUBLIC_KEY_LOCATION
+    public_key = var.public_key_location
 }
 
 # IAM Role for SSM
 resource "aws_iam_role" "ec2_ssm_role" {
-  name = "${var.ENV_PREFIX}-ec2-ssm-role"
+  name = "${var.env_prefix}-ec2-ssm-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -356,11 +356,11 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_agent_policy_attachment" {
 
 # IAM Instance Profile
 resource "aws_iam_instance_profile" "ec2_ssm_profile" {
-  name = "${var.ENV_PREFIX}-ec2-ssm-profile"
+  name = "${var.env_prefix}-ec2-ssm-profile"
   role = aws_iam_role.ec2_ssm_role.name
 
   tags = {
-    Name = "${var.ENV_PREFIX}-ec2-ssm-profile"
+    Name = "${var.env_prefix}-ec2-ssm-profile"
   }
 }
 
@@ -384,7 +384,7 @@ resource "aws_instance" "my-server" {
     count = var.az_count
     
     ami = data.aws_ami.ubuntu.id
-    instance_type = var.INSTANCE_TYPE
+    instance_type = var.instance_type
 
     associate_public_ip_address = false
     key_name = aws_key_pair.ssh-key.key_name
@@ -396,7 +396,7 @@ resource "aws_instance" "my-server" {
     user_data = file("entry-script.sh")
 
     tags = {
-      name = "${var.ENV_PREFIX}-webserver01-${count.index + 1}"
+      name = "${var.env_prefix}-webserver01-${count.index + 1}"
        SSM  = "Enabled" 
     }   
 }
