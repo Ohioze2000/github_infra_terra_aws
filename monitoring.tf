@@ -1,16 +1,16 @@
 #SNS Topic for CloudWatch Alarms ---
 resource "aws_sns_topic" "cloudwatch_alarms_topic" {
-  name = "${var.env_prefix}-cloudwatch-alarms"
-  display_name = "${var.env_prefix} CloudWatch Alarms"
+  name = "${var.ENV_PREFIX}-cloudwatch-alarms"
+  display_name = "${var.ENV_PREFIX} CloudWatch Alarms"
 
   tags = {
-    Name = "${var.env_prefix}-cloudwatch-alarms"
+    Name = "${var.ENV_PREFIX}-cloudwatch-alarms"
   }
 }
 
 #CloudWatch Alarm for Average CPU Utilization across all web servers ---
 resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
-  alarm_name          = "${var.env_prefix}-High-CPU-Utilization"
+  alarm_name          = "${var.ENV_PREFIX}-High-CPU-Utilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "CPUUtilization"
@@ -41,7 +41,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
 
   tags = {
-    Name = "${var.env_prefix}-High-CPU-Alarm"
+    Name = "${var.ENV_PREFIX}-High-CPU-Alarm"
   }
 }
 

@@ -22,7 +22,7 @@ output "private_instance_ids" {
 }
 
 output "website_url" {
-  value = "https://${var.domain_name}"
+  value = "https://${var.DOMAIN_NAME}"
 }
 
 output "route53_record_name" {
