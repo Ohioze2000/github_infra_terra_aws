@@ -8,6 +8,10 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aws
+
     env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     environment: dev
