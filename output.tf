@@ -1,7 +1,7 @@
 /*output "public_ip"{
 	value = [for instance in aws_instance.my-server : instance.public_ip]
-}*/
-
+}*/ 
+#
 output "alb_dns" {
   value = aws_lb.app-alb.dns_name
 }

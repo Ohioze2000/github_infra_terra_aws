@@ -8,7 +8,7 @@ resource "aws_sns_topic" "cloudwatch_alarms_topic" {
   }
 }
 
-#CloudWatch Alarm for Average CPU Utilization across all web servers ---
+#CloudWatch Alarm for Average CPU Utilization across all web servers ----
 resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
   alarm_name          = "${var.env_prefix}-High-CPU-Utilization"
   comparison_operator = "GreaterThanOrEqualToThreshold"

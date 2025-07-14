@@ -136,3 +136,5 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 echo "CloudWatch Agent started."
 
 echo "Instance setup complete."
+
+#

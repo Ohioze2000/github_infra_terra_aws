@@ -5,7 +5,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# IMPORTANT: Filter the list of available AZs to only the first 'az_count'-
+# IMPORTANT: Filter the list of available AZs to only the first 'az_count'--
 locals {
   selected_azs = slice(data.aws_availability_zones.available.names, 0, var.az_count)
 }
