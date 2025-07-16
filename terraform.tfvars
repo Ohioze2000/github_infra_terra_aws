@@ -1,8 +1,0 @@
-#
-vpc_cidr_block = "10.0.0.0/16"
-env_prefix = "dev"
-my_ip = "0.0.0.0/0"
-instance_type = "t2.micro"
-public_key_location = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC1M0+pvOG4WcCfTRZtf+Np7XIK39P7i3Hzr+jxGC7fob33Xc5scIeHjv2GY3U4Qnp4fVBW3q/kSTThH1kcUDuGd1DhOrm1RWg2yMaRUAzk86yNAYffWfp107Gf4lhr8dc8HJpgXvWBLIe/KQP95rB8D6++V/ob0AELI8P4BzHiuBybsJvaiZynZsMb+GL87UA1ioKiVF44eviX0MHJL2BoHhI98RVLnoY4yzza7Gn8l6KuxDua4o/U32SoRffc1rlswi5LBYRDC5HYRqGCnWZ5NzZBXb4JupcHatU1VviqZ3Nty9jnbGXiwDEKztCtqQjJBkkOyjlVZxahi9mYiUCCMCd5MjdQDJU/ohnnaq1UOjTo9bjVEEqPaY/IQBEmc861MWDVhUTLyl+Uq4ARM/xI+c6WRM+uWdawKseBaCpoNGkdzfOlDDJ2fghwP8jM7GhfqAaFcfIw1T6mDMiwUbccIM8IoHkY4RYWdevk5v5ONso8Yvy5/mJFacbHrsVWmHb8YtzeW/POXjYp7pOwbMH3Zz4srL6ob7m8bcxEj22oFUSgUyvygtLigLd+ML2eLJaiNhjs4p6kdjAMbQqcM1O8XgBuuaylyNs801WeT9q3A38k9n94BCT4K/Brt8OLh4cbCviSMlWtWq7+zGrYsh5JFieSG/k9OlsZA17lVu9jaw== quantum@Laptop-OA"
-domain_name     = "slimecloud.online"
-
