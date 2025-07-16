@@ -3,11 +3,6 @@ name: 'GitOps-Native AWS Web Stack with Terraform Cloud & Slack Integration'
 on:
   push:
     branches: [ "main" ]
-
-jobs:
-  terraform:
-    name: 'Terraform Plan & Apply'
-    runs-on: ubuntu-latest
         
     environment: dev
 
