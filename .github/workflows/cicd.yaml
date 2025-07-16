@@ -6,10 +6,15 @@ on:
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform Plan & Apply'
     runs-on: ubuntu-latest
         
     environment: dev
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
 
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -23,12 +28,6 @@ jobs:
       TF_VAR_instance_type: ${{ secrets.TF_VAR_INSTANCE_TYPE }}
       TF_VAR_public_key_location: ${{ secrets.TF_VAR_PUBLIC_KEY_LOCATION }}
       TF_VAR_domain_name : ${{ secrets.TF_VAR_DOMAIN_NAME }}
-
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
 
     steps:
     - uses: act10ns/slack@v2
@@ -47,6 +46,15 @@ jobs:
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+    - name: Inject lowercase TF_VAR_* from secrets
+      run: |
+          echo "TF_VAR_vpc_cidr_block=${TF_VAR_VPC_CIDR_BLOCK}" >> $GITHUB_ENV
+          echo "TF_VAR_env_prefix=${TF_VAR_ENV_PREFIX}" >> $GITHUB_ENV
+          echo "TF_VAR_my_ip=${TF_VAR_MY_IP}" >> $GITHUB_ENV
+          echo "TF_VAR_instance_type=${TF_VAR_INSTANCE_TYPE}" >> $GITHUB_ENV
+          echo "TF_VAR_public_key_location=${TF_VAR_PUBLIC_KEY_LOCATION}" >> $GITHUB_ENV
+          echo "TF_VAR_domain_name=${TF_VAR_DOMAIN_NAME}" >> $GITHUB_ENV
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
@@ -60,8 +68,8 @@ jobs:
     #- name: Terraform Apply
     #  run: terraform apply -auto-approve -input=false -
 
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve -input=false
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -input=false
     
     - uses: act10ns/slack@v2
       with:

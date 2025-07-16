@@ -3,6 +3,4 @@
 .terraform/*
 
 # tfvars files may contain sensitive data
-#terraform.tfvars
-
-#
+terraform.tfvars
