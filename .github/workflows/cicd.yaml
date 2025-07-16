@@ -2,9 +2,10 @@ name: 'GitOps-Native AWS Web Stack with Terraform Cloud & Slack Integration'
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+    branches:
+      - dev
+    
+    environment: dev
 
     env:
   TF_VAR_vpc_cidr_block: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
