@@ -295,6 +295,7 @@ resource "aws_route53_record" "cert_validation" {
 # Create ACM Certificate
 resource "aws_acm_certificate" "cert" {
   domain_name       = aws_route53_zone.primary.name
+  subject_alternative_names = ["www.${var.domain_name}"]
   validation_method = "DNS"
 
   lifecycle {
