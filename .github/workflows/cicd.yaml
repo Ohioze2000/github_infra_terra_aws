@@ -59,6 +59,11 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
+    - name: DEBUG - List TF_VAR_* environment variables
+      run: |
+          echo "Listing injected TF_VAR_ environment variables:"
+          printenv | grep TF_VAR_
+
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
