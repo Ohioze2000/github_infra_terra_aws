@@ -4,19 +4,7 @@ on:
   push:
     branches: [ "main" ]
 
-jobs:
-  terraform:
-    name: 'Terraform Plan & Apply'
-    runs-on: ubuntu-latest
-        
-    environment: dev
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
-    env:
+     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
 
@@ -29,6 +17,20 @@ jobs:
       TF_VAR_public_key_location: ${{ secrets.TF_VAR_public_key_location }}
       TF_VAR_domain_name : ${{ secrets.TF_VAR_domain_name }}
 
+
+jobs:
+  terraform:
+    name: 'Terraform Plan & Apply'
+    runs-on: ubuntu-latest
+        
+    environment: dev
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+   
     steps:
     - uses: act10ns/slack@v2
       with:
@@ -44,29 +46,38 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_version: 1.6.6
 
-    - name: Inject lowercase TF_VAR_* from secrets
+    - name: Terraform Format Check
+      run: terraform fmt -check -recursive
+
+    - name: Install TFLint
       run: |
-          echo "TF_VAR_vpc_cidr_block=${TF_VAR_VPC_CIDR_BLOCK}" >> $GITHUB_ENV
-          echo "TF_VAR_env_prefix=${TF_VAR_ENV_PREFIX}" >> $GITHUB_ENV
-          echo "TF_VAR_my_ip=${TF_VAR_MY_IP}" >> $GITHUB_ENV
-          echo "TF_VAR_instance_type=${TF_VAR_INSTANCE_TYPE}" >> $GITHUB_ENV
-          echo "TF_VAR_public_key_location=${TF_VAR_PUBLIC_KEY_LOCATION}" >> $GITHUB_ENV
-          echo "TF_VAR_domain_name=${TF_VAR_DOMAIN_NAME}" >> $GITHUB_ENV
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          tflint --init
+
+    - name: Run TFLint
+      run: tflint    
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
 
-    - name: DEBUG - List TF_VAR_* environment variables
-      run: |
-          echo "Listing injected TF_VAR_ environment variables:"
-          printenv | grep TF_VAR_
+    - name: Terraform Validate
+      run: terraform validate
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
+
+    - name: Debug Environment Variables
+      run: |
+          echo "vpc_cidr_block: $TF_VAR_vpc_cidr_block"
+          echo "env_prefix: $TF_VAR_env_prefix"
+          echo "my_ip: $TF_VAR_my_ip"
+          echo "instance_type: $TF_VAR_instance_type"
+          echo "public_key_location: $TF_VAR_public_key_location"
+          echo "domain_name: $TF_VAR_domain_name"
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
@@ -74,6 +85,7 @@ jobs:
     #  run: terraform apply -auto-approve -input=false -
 
     - name: Terraform Apply
+      if: github.ref == 'refs/heads/dev'
       run: terraform apply -auto-approve -input=false
     
     - uses: act10ns/slack@v2
