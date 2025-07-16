@@ -6,11 +6,6 @@ on:
         
     environment: dev
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
     env:
   TF_VAR_vpc_cidr_block: ${{ secrets.TF_VAR_VPC_CIDR_BLOCK }}
   TF_VAR_env_prefix: ${{ secrets.TF_VAR_ENV_PREFIX }}
