@@ -240,11 +240,11 @@ resource "aws_lb_listener" "https" {
 
 # Create Hosted Zone
 resource "aws_route53_zone" "primary" {
-  name = "slimecloud.online"
+  name = var.domain_name
 }
 
 # Route 53 Hosted Zone
-resource "aws_route53_record" "www" {
+resource "aws_route53_record" "root" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = var.domain_name
   type    = "A"
@@ -257,7 +257,7 @@ resource "aws_route53_record" "www" {
 }
 
 # Alias record for the www subdomain
-resource "aws_route53_record" "www_alias" {
+resource "aws_route53_record" "www" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = "www.${var.domain_name}" # The www subdomain
   type    = "A"
@@ -266,13 +266,7 @@ resource "aws_route53_record" "www_alias" {
     zone_id                = aws_lb.app-alb.zone_id
     evaluate_target_health = true
   }
-  # This record depends on the ACM certificate being validated,
-  # as well as the ALB being available and its listeners configured.
-  depends_on = [
-    aws_acm_certificate_validation.cert_validation,
-    aws_lb_listener.https,
-    aws_lb_listener.http_redirect
-  ]
+  
 }
 
 # Add DNS Validation Record
@@ -294,13 +288,11 @@ resource "aws_route53_record" "cert_validation" {
 
 # Create ACM Certificate
 resource "aws_acm_certificate" "cert" {
-  domain_name       = aws_route53_zone.primary.name
-  subject_alternative_names = ["www.${var.domain_name}"]
+  domain_name       = var.domain_name
+  
   validation_method = "DNS"
 
-  lifecycle {
-    create_before_destroy = true
-  }
+  subject_alternative_names = ["www.${var.domain_name}"]
 
   tags = {
     Name = "SSL certificate for ${var.domain_name}"
@@ -312,7 +304,6 @@ resource "aws_acm_certificate_validation" "cert_validation" {
   certificate_arn         = aws_acm_certificate.cert.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 
-  depends_on = [aws_route53_record.cert_validation]
 }
 
 # To get NS records
