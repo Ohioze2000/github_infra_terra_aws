@@ -1,0 +1,94 @@
+#
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+# IMPORTANT: Filter the list of available AZs to only the first 'az_count'--
+locals {
+  selected_azs = slice(data.aws_availability_zones.available.names, 0, var.az_count)
+}
+
+resource "aws_subnet" "my-public-subnet-1" {
+    count             = var.az_count
+    cidr_block = cidrsubnet(var.vpc_cidr_block, 8, count.index)
+    vpc_id = var.vpc_id
+    availability_zone   = local.selected_azs[count.index] # Use the filtered list of AZs
+    map_public_ip_on_launch = true
+
+    tags = {
+        Name = "${var.env_prefix}-pub-subnet-${count.index + 1}"
+    }
+}
+
+resource "aws_subnet" "my-private-subnet-1" {
+    count             = var.az_count # Use az_count here too
+    cidr_block = cidrsubnet(var.vpc_cidr_block, 8, count.index + var.az_count)
+    vpc_id = var.vpc_id
+    availability_zone   = local.selected_azs[count.index] # Use the filtered list of AZs
+
+    tags = {
+        Name = "${var.env_prefix}-priv-subnet-${count.index + 1}"
+    }
+}
+
+resource "aws_internet_gateway" "my-igw" {
+    vpc_id = var.vpc_id
+
+    tags = {
+        Name = "${var.env_prefix}-igw"
+    }
+}
+
+resource "aws_route_table" "my-rtb" {
+    vpc_id = var.route_table.id
+        route {
+            cidr_block = "0.0.0.0/0"
+            gateway_id = aws_internet_gateway.my-igw.id
+        }
+    
+    tags = {
+        Name = "${var.env_prefix}-rtb"
+    }
+}
+
+resource "aws_route_table_association" "my-rtb-sub-ass" {
+    count          = 1
+    subnet_id = aws_subnet.my-public-subnet-1[count.index].id
+    route_table_id = aws_route_table.my-rtb.id
+}
+
+# Elastic IP for NAT Gateway
+    resource "aws_eip" "nat" {
+    count = 1
+}
+
+# NAT Gateway
+resource "aws_nat_gateway" "my-nat" {
+  allocation_id = aws_eip.nat[0].id
+  subnet_id     = aws_subnet.my-public-subnet-1[0].id
+  depends_on    = [aws_internet_gateway.my-igw]
+
+  tags = {
+    Name = "${var.env_prefix}-nat-gw"
+  }
+}
+
+# Private Route Table
+resource "aws_route_table" "my-private-rtb" {
+  vpc_id = aws_vpc.my-vpc.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.my-nat.id
+  }
+
+  tags = {
+    Name = "${var.env_prefix}-private-rt"
+  }
+}
+
+resource "aws_route_table_association" "private" {
+  count          = 1
+  subnet_id      = aws_subnet.my-private-subnet-1[count.index].id
+  route_table_id = aws_route_table.my-private-rtb.id
+}

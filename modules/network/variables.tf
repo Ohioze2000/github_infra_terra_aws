@@ -28,6 +28,8 @@ variable "domain_name"{
   type        = string
 }
 
-variable "image_name" {}
+variable "vpc_id" {}
 
-#
+variable "route_table_id" {}
+
+

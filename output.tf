@@ -4,17 +4,12 @@
 }*/ 
 #
 output "alb_dns" {
-  value = aws_lb.app-alb.dns_name
-}
-
-output "certificate_arn" {
-  description = "Issued ACM certificate ARN"
-  value       = aws_acm_certificate_validation.cert_validation.certificate_arn
+  value = module.myapp-alb.alb_dns
 }
 
 output "cloudwatch_alarms_topic_arn" {
   description = "ARN of the SNS topic for CloudWatch alarms"
-  value       = aws_sns_topic.cloudwatch_alarms_topic.arn
+  value       = module.myapp-monitoring.cloudwatch_alarms_topic_arn
 }
 
 output "private_instance_ids" {
@@ -23,14 +18,14 @@ output "private_instance_ids" {
 }
 
 output "website_url" {
-  value = "https://${var.domain_name}"
+  value = module.myapp-dns.website_url
 }
 
 output "route53_record_name" {
-  value = aws_route53_record.www.fqdn
+  value = module.myapp-dns.root_url
 }
 
 output "name_servers" {
-  value       = aws_route53_zone.primary.name_servers
+  value       = module.myapp-dns.name_servers.zone_id
   description = "Use these NS records in your domain registrar's dashboard"
 }

@@ -1,4 +1,3 @@
-#
 #SNS Topic for CloudWatch Alarms ---
 resource "aws_sns_topic" "cloudwatch_alarms_topic" {
   name = "${var.env_prefix}-cloudwatch-alarms"
@@ -54,4 +53,3 @@ resource "aws_sns_topic_subscription" "email_subscription" {
 
   # You will receive a confirmation email. You must click the link in the email to confirm the subscription.
 }
-
