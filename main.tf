@@ -24,7 +24,7 @@ resource "aws_vpc" "my-vpc" {
 }
 
 module "myapp-network" {
-  source = "../modules/network"
+  source = "/modules/network"
   vpc_id = var.aws_vpc.my-vpc.id
   env_prefix = var.env_prefix
   az_count = var.az_count
@@ -32,7 +32,7 @@ module "myapp-network" {
 }
 
 module "myapp-server" {
-  source = "../modules/webserver"
+  source = "/modules/webserver"
   vpc_id = var.aws_vpc.my-vpc.id
   public_key_location = var.public_key_location
   az_count = var.az_count
@@ -43,33 +43,33 @@ module "myapp-server" {
 }
 
 module "myapp-iam" {
-  source = "../modules/iam"
+  source = "/modules/iam"
   env_prefix = var.env_prefix
 }
 
 module "myapp-alb" {
-  source = "../modules/alb"
+  source = "/modules/alb"
   domain_name = var.domain_name
 }
 
 module "myapp-dns" {
-  source = "../modules/dns"
+  source = "/modules/dns"
   domain_name = var.domain_name
 }
 
 module "myapp-security" {
-  source = "../modules/security"
+  source = "/modules/security"
   env_prefix = var.env_prefix
   my_ip = var.my_ip
 }
 
 module "myapp-ssl" {
-  source = "../modules/ssl"
+  source = "/modules/ssl"
   domain-name = var.domain_name
 }
 
 module "myapp-monitoring" {
-  source = "../modules/monitoring"
+  source = "/modules/monitoring"
   env_prefix = var.env_prefix
 }
 
