@@ -20,6 +20,6 @@ variable "env_prefix"{
 
 variable "subnet_id" {}
 
-variable "image_name" {
-    
-}
+variable "image_name" {}
+
+variable "vpc_id" {}

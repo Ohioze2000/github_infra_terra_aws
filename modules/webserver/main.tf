@@ -3,7 +3,7 @@
 # Security Group for EC2
 resource "aws_security_group" "ec2-sg" {
     name = "ec2-sg"
-    vpc_id = var-vpc_id
+    vpc_id = var.vpc_id
     description = "Allow ALB to reach EC2"
         ingress {
             from_port = 80

@@ -25,16 +25,20 @@ resource "aws_vpc" "my-vpc" {
 
 module "my-subnet" {
   source = "./modules/network"
-  vpc_id = var.aws_vpc.my-vpc.id
+  vpc_id = aws_vpc.my-vpc.id
   env_prefix = var.env_prefix
   az_count = var.az_count
   vpc_cidr_block = var.vpc_cidr_block
   route_table_id = var.route_table.id
+  domain_name = var.domain_name
+  instance_type = var.instance_type
+  my_ip = var.my_ip
+  public_key_location = var.public_key_location
 }
 
 module "my-server" {
   source = "./modules/webserver"
-  vpc_id = var.aws_vpc.my-vpc.id
+  vpc_id = aws_vpc.my-vpc.id
   public_key_location = var.public_key_location
   az_count = var.az_count
   instance_type = var.instance_type
@@ -48,28 +52,47 @@ module "ec2_ssm_role-iam" {
   env_prefix = var.env_prefix
 }
 
-module "app-alb" {
+module "my-alb" {
   source = "./modules/alb"
   domain_name = var.domain_name
+  public_key_location = var.public_key_location
+  env_prefix = var.env_prefix
+  vpc_cidr_block = var.vpc_cidr_block
+  my_ip = var.my_ip
+  instance_type = var.instance_type
 }
 
-module "primary-dns" {
+module "my-dns" {
   source = "./modules/dns"
   domain_name = var.domain_name
-}
-
-module "alb-security" {
-  source = "./modules/security"
+  instance_type = var.instance_type
   env_prefix = var.env_prefix
+  public_key_location = var.public_key_location
+  vpc_cidr_block = var.vpc_cidr_block
   my_ip = var.my_ip
 }
 
-module "cert-ssl" {
-  source = "./modules/ssl"
-  domain-name = var.domain_name
+module "my-security" {
+  source = "./modules/security"
+  env_prefix = var.env_prefix
+  my_ip = var.my_ip
+  domain_name = var.domain_name
+  public_key_location = var.public_key_location
+  instance_type = var.instance_type
+  vpc_cidr_block = var.vpc_cidr_block
 }
 
-module "cloudwatch_alarms_topic-monitoring" {
+module "my-ssl" {
+  source = "./modules/ssl"
+  domain_name = var.domain_name
+  vpc_cidr_block = var.vpc_cidr_block
+  env_prefix = var.env_prefix
+  my_ip = var.my_ip
+  instance_type = var.instance_type
+  public_key_location = var.public_key_location
+}
+
+module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
 }
