@@ -10,8 +10,8 @@ resource "aws_route53_record" "root" {
   type    = "A"
 
   alias {
-    name                   = aws_lb.app-alb.dns_name       # or aws_instance.web.public_dns
-    zone_id                = aws_lb.app-alb.zone_id        # ALB zone ID
+    name                   = module.my-alb.alb_dns.dns_name        # or aws_instance.web.public_dns
+    zone_id                = module.my-alb.alb_dns.zone_id        # ALB zone ID
     evaluate_target_health = true
   }
 }
@@ -22,8 +22,8 @@ resource "aws_route53_record" "www" {
   name    = "www.${var.domain_name}" # The www subdomain
   type    = "A"
   alias {
-    name                   = aws_lb.app-alb.dns_name
-    zone_id                = aws_lb.app-alb.zone_id
+    name                   = module.my-alb.alb_dns.dns_name
+    zone_id                = module.my-alb.alb_dns.zone_id
     evaluate_target_health = true
   }
   

@@ -4,21 +4,21 @@
 }*/ 
 #
 output "alb_dns" {
-  value = module.myapp-alb.alb_dns
+  value = module.my-alb.alb_dns
 }
 
 output "cloudwatch_alarms_topic_arn" {
   description = "ARN of the SNS topic for CloudWatch alarms"
-  value       = module.myapp-monitoring.cloudwatch_alarms_topic_arn
+  value       = module.my-monitoring.cloudwatch_alarms_topic_arn
 }
 
 output "private_instance_ids" {
   description = "IDs of the private EC2 instances"
-  value       = aws_instance.my-server[*].id
+  value       = module.my-server.instances[*].id
 }
 
 output "website_url" {
-  value = module.myapp-dns.website_url
+  value = module.my-dns.website_url
 }
 
 output "route53_record_name" {

@@ -14,3 +14,7 @@ output "name_servers" {
   value       = aws_route53_zone.primary.zone_id
   description = "Use these NS records in your domain registrar's dashboard"
 }
+
+output "route53-certval" {
+    value = aws_route53_record.cert_validation
+}

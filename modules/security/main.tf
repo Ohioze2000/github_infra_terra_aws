@@ -2,7 +2,7 @@
 resource "aws_security_group" "alb-sg" {
   name        = "alb-sg"
   description = "Allow HTTP/HTTPS traffic"
-  vpc_id      = aws_vpc.my-vpc.id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80

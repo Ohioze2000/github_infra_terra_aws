@@ -11,8 +11,8 @@ resource "aws_lb" "app-alb" {
   name               = "${var.env_prefix}-App-ALB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb-sg.id]
-  subnets            = aws_subnet.my-public-subnet-1[*].id
+  security_groups    = [module.my-security.security_group.id]
+  subnets            = module.my-server.subnet-2[*].id
 
   tags = {
     Name = "${var.env_prefix}-App-ALB"
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "app-tg" {
   name     = "${var.env_prefix}-app-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id = aws_vpc.my-vpc.id
+  vpc_id = var.vpc_id
 
   health_check {
     path                = "/"

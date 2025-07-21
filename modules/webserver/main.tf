@@ -9,7 +9,7 @@ resource "aws_security_group" "ec2-sg" {
             from_port = 80
             to_port = 80
             protocol = "tcp"
-            security_groups = [module.myapp-security.security_group.id]
+            security_groups = [module.my-security.security_group.id]
         }
 
         egress {
