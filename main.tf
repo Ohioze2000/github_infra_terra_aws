@@ -81,6 +81,7 @@ module "my-security" {
   public_key_location = var.public_key_location
   instance_type = var.instance_type
   vpc_cidr_block = var.vpc_cidr_block
+  vpc_id = aws_vpc.my-vpc.id
 }
 
 module "my-ssl" {
