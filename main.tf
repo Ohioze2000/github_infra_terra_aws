@@ -60,6 +60,7 @@ module "my-alb" {
   vpc_cidr_block = var.vpc_cidr_block
   my_ip = var.my_ip
   instance_type = var.instance_type
+  vpc_id = aws_vpc.my-vpc.id
 }
 
 module "my-dns" {
