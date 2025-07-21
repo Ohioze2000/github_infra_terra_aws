@@ -23,52 +23,53 @@ resource "aws_vpc" "my-vpc" {
     }
 }
 
-module "myapp-network" {
+module "my-subnet" {
   source = "/modules/network"
   vpc_id = var.aws_vpc.my-vpc.id
   env_prefix = var.env_prefix
   az_count = var.az_count
   vpc_cidr_block = var.vpc_cidr_block
+  route_table_id = var.route_table.id
 }
 
-module "myapp-server" {
+module "my-server" {
   source = "/modules/webserver"
   vpc_id = var.aws_vpc.my-vpc.id
   public_key_location = var.public_key_location
   az_count = var.az_count
   instance_type = var.instance_type
   env_prefix = var.env_prefix
-  subnet_id = module.myapp-network.subnet.id
+  subnet_id = module.my-subnet.subnet.id
   image_name = var.image_name
 }
 
-module "myapp-iam" {
+module "ec2_ssm_role-iam" {
   source = "/modules/iam"
   env_prefix = var.env_prefix
 }
 
-module "myapp-alb" {
+module "app-alb" {
   source = "/modules/alb"
   domain_name = var.domain_name
 }
 
-module "myapp-dns" {
+module "primary-dns" {
   source = "/modules/dns"
   domain_name = var.domain_name
 }
 
-module "myapp-security" {
+module "alb-security" {
   source = "/modules/security"
   env_prefix = var.env_prefix
   my_ip = var.my_ip
 }
 
-module "myapp-ssl" {
+module "cert-ssl" {
   source = "/modules/ssl"
   domain-name = var.domain_name
 }
 
-module "myapp-monitoring" {
+module "cloudwatch_alarms_topic-monitoring" {
   source = "/modules/monitoring"
   env_prefix = var.env_prefix
 }
