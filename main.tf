@@ -24,7 +24,7 @@ resource "aws_vpc" "my-vpc" {
 }
 
 module "my-subnet" {
-  source = "/modules/network"
+  source = "./modules/network"
   vpc_id = var.aws_vpc.my-vpc.id
   env_prefix = var.env_prefix
   az_count = var.az_count
@@ -33,7 +33,7 @@ module "my-subnet" {
 }
 
 module "my-server" {
-  source = "/modules/webserver"
+  source = "./modules/webserver"
   vpc_id = var.aws_vpc.my-vpc.id
   public_key_location = var.public_key_location
   az_count = var.az_count
@@ -44,33 +44,33 @@ module "my-server" {
 }
 
 module "ec2_ssm_role-iam" {
-  source = "/modules/iam"
+  source = "./modules/iam"
   env_prefix = var.env_prefix
 }
 
 module "app-alb" {
-  source = "/modules/alb"
+  source = "./modules/alb"
   domain_name = var.domain_name
 }
 
 module "primary-dns" {
-  source = "/modules/dns"
+  source = "./modules/dns"
   domain_name = var.domain_name
 }
 
 module "alb-security" {
-  source = "/modules/security"
+  source = "./modules/security"
   env_prefix = var.env_prefix
   my_ip = var.my_ip
 }
 
 module "cert-ssl" {
-  source = "/modules/ssl"
+  source = "./modules/ssl"
   domain-name = var.domain_name
 }
 
 module "cloudwatch_alarms_topic-monitoring" {
-  source = "/modules/monitoring"
+  source = "./modules/monitoring"
   env_prefix = var.env_prefix
 }
 
