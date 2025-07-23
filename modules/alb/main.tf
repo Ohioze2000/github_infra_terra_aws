@@ -1,6 +1,6 @@
 # Register EC2 in Target Group
 resource "aws_lb_target_group_attachment" "web_attach" {
-  count          = length(aws_instance.my-server)
+  count          = length(module.my-server.instances)
   target_group_arn = aws_lb_target_group.app-tg.arn
   target_id        = aws_instance.my-server[count.index].id
   port             = 80
@@ -12,7 +12,7 @@ resource "aws_lb" "app-alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [module.my-security.security_group.id]
-  subnets            = module.my-server.subnet-2[*].id
+  subnets            = module.my-subnet.subnet-2[*].id
 
   tags = {
     Name = "${var.env_prefix}-App-ALB"

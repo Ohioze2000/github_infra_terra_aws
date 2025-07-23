@@ -68,6 +68,8 @@ resource "aws_instance" "my-server" {
     availability_zone           = local.selected_azs[count.index] # Use the filtered list of AZs
     iam_instance_profile = module.iam_profile.myapp-iam.name
 
+    vpc_security_group_ids = [aws_security_group.ec2-sg.id]
+
     user_data = file("entry-script.sh")
 
     tags = {

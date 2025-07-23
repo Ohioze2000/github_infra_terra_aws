@@ -22,10 +22,10 @@ output "website_url" {
 }
 
 output "route53_record_name" {
-  value = module.myapp-dns.root_url
+  value = module.my-dns.root_url
 }
 
 output "name_servers" {
-  value       = module.myapp-dns.name_servers.zone_id
+  value       = module.my-dns.name_servers.zone_id
   description = "Use these NS records in your domain registrar's dashboard"
 }
