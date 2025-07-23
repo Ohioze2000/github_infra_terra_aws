@@ -10,8 +10,8 @@ resource "aws_route53_record" "root" {
   type    = "A"
 
   alias {
-    name                   = module.my-alb.alb_dns.dns_name        # or aws_instance.web.public_dns
-    zone_id                = module.my-alb.alb_dns.zone_id        # ALB zone ID
+    name                   = var.alb_id.dns_name        # or aws_instance.web.public_dns
+    zone_id                = var.alb_id.zone_id        # ALB zone ID
     evaluate_target_health = true
   }
 }
@@ -22,8 +22,8 @@ resource "aws_route53_record" "www" {
   name    = "www.${var.domain_name}" # The www subdomain
   type    = "A"
   alias {
-    name                   = module.my-alb.alb_dns.dns_name
-    zone_id                = module.my-alb.alb_dns.zone_id
+    name                   = var.alb_id.dns_name
+    zone_id                = var.alb_id.dns_name
     evaluate_target_health = true
   }
   
@@ -32,7 +32,7 @@ resource "aws_route53_record" "www" {
 # Add DNS Validation Record
 resource "aws_route53_record" "cert_validation" {
   for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+    for dvo in vair.cert_id.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       type   = dvo.resource_record_type
       record = dvo.resource_record_value

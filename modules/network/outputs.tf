@@ -10,5 +10,5 @@ output "subnet-2" {
 
 output "private_instance_ids" {
   description = "IDs of the private EC2 instances"
-  value       = module.my-server.instances[*].id
+  value       = aws_instance.my-server[*].id
 }

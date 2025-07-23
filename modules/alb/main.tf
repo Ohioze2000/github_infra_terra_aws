@@ -1,8 +1,39 @@
+resource "aws_security_group" "alb-sg" {
+  name        = "alb-sg"
+  description = "Allow HTTP/HTTPS traffic"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+     Name = "${var.env_prefix}-alb-sg"
+  }
+}
+
 # Register EC2 in Target Group
 resource "aws_lb_target_group_attachment" "web_attach" {
-  count          = length(module.my-server.instances)
+  count          = length(var.server_id)
   target_group_arn = aws_lb_target_group.app-tg.arn
-  target_id        = aws_instance.my-server[count.index].id
+  target_id        = var.server_id[count.index].id
   port             = 80
 } 
 
@@ -11,8 +42,8 @@ resource "aws_lb" "app-alb" {
   name               = "${var.env_prefix}-App-ALB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [module.my-security.security_group.id]
-  subnets            = module.my-subnet.subnet-2[*].id
+  security_groups    = [aws_security_group.alb-sg.id]
+  subnets_id            = var.subnets_id[*].id
 
   tags = {
     Name = "${var.env_prefix}-App-ALB"

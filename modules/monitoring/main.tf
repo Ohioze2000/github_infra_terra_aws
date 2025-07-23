@@ -30,10 +30,10 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
   #}
 
   # If you want one alarm per instance (using count):
-    count = length(module.my-server.instances)
+    count = length(var.server_id)
   # alarm_name = "${var.env_prefix}-High-CPU-Utilization-${count.index + 1}"
    dimensions = {
-    InstanceId = module.my-server.instances[count.index].id
+    InstanceId = var.server_id[count.index].id
    }
 
   actions_enabled     = true

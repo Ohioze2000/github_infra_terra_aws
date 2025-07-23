@@ -30,4 +30,15 @@ variable "domain_name"{
 
 variable "image_name" {}
 
+variable "route_table_id" {}
+
+variable "server_id" {}
+
+variable "subnets_id" {}
+
+variaable "alb_id" {}
+
+variable "cert_id" {}
+
+variable "certval_id" {}
 #

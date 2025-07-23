@@ -5,3 +5,9 @@ variable "env_prefix"{
 }
 
 variable "vpc_id" {}
+
+variable "my_ip" {}
+
+variable "server_id" {}
+
+variable "subnets_id" {}

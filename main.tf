@@ -52,28 +52,28 @@ module "my-alb" {
   source = "./modules/alb"
   env_prefix = var.env_prefix
   vpc_id = aws_vpc.my-vpc.id
+  my_ip = var.my_ip
+  server_id = var.server_id
+  subnet_id = var.subnets_id
 }
 
 module "my-dns" {
   source = "./modules/dns"
   domain_name = var.domain_name
-}
-
-module "my-security" {
-  source = "./modules/security"
-  vpc_id = aws_vpc.my-vpc.id
-  env_prefix = var.env_prefix
-  my_ip = var.my_ip
+  alb_id = var.alb_id
+  cert_id = var.cert_id
 }
 
 module "my-ssl" {
   source = "./modules/ssl"
   domain_name = var.domain_name
+  certval_id = var.certval_id
 }
 
 module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
+  server_id = var.server_id
 }
 
 
