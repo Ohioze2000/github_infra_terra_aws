@@ -36,7 +36,7 @@ variable "server_id" {}
 
 variable "subnets_id" {}
 
-variaable "alb_id" {}
+variable "alb_id" {}
 
 variable "cert_id" {}
 

@@ -4,6 +4,6 @@ variable "domain_name"{
   type        = string
 }
 
-variaable "alb_id" {}
+variable "alb_id" {}
 
 variable "cert_id" {}
