@@ -51,7 +51,7 @@ module "ec2_ssm_role-iam" {
 module "my-alb" {
   source = "./modules/alb"
   env_prefix = var.env_prefix
-  my_ip = var.my_ip
+  vpc_id = aws_vpc.my-vpc.id
 }
 
 module "my-dns" {
