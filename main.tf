@@ -77,7 +77,7 @@ module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
   server_id = var.server_id
-  instance_ids = module.my-server.instance_ids_list
+  instance_ids = module.my-server.instance_ids
 }
 
 

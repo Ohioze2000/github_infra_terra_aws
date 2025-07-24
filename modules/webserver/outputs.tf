@@ -11,7 +11,7 @@ output "instance_ids" {
   value       = aws_instance.my-server[*].id # Or whatever your instance resource is named
 }
 
-output "instance_ids_list" { # A list of string IDs
-  description = "List of IDs for the instances created in this module."
-  value       = aws_instance.your_instance_resource_name.*.id
-}
+#output "instance_ids_list" { # A list of string IDs
+#  description = "List of IDs for the instances created in this module."
+#  value       = aws_instance.my-server.*.id
+#}

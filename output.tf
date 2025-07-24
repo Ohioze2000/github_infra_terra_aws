@@ -22,10 +22,10 @@ output "private_instance_ids" {
   value       = module.my-server.instances[*].id
 }
 
-output "private_instance_ids" {
-  description = "IDs of the private EC2 instances (re-exported from my-server module)."
-  value       = module.my-server.instance_ids_list # Echoing the output from my-server
-}
+#output "private_instance_ids" {
+#  description = "IDs of the private EC2 instances (re-exported from my-server module)."
+#  value       = module.my-server.instance_ids_list # Echoing the output from my-server
+#}
 
 output "website_url" {
   value = module.my-dns.website_url
