@@ -40,7 +40,7 @@ output "name_servers" {
   description = "Use these NS records in your domain registrar's dashboard"
 }
 
-output "private_instance_ids" {
-  description = "IDs of the private EC2 instances from the my-server module"
-  value       = module.my-server.instance_ids # Accessing the output of the 'my-server' child module
-}
+#output "private_instance_ids" {
+#  description = "IDs of the private EC2 instances from the my-server module"
+#  value       = module.my-server.instance_ids # Accessing the output of the 'my-server' child module
+#}
