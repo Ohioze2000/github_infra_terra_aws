@@ -4,4 +4,4 @@ variable "domain_name"{
   type        = string
 }
 
-variable "certval_id" {}
+#variable "certval_id" {}

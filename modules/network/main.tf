@@ -40,7 +40,7 @@ resource "aws_internet_gateway" "my-igw" {
 }
 
 resource "aws_route_table" "my-rtb" {
-    vpc_id = var.route_table_id
+    vpc_id = var.vpc_id
         route {
             cidr_block = "0.0.0.0/0"
             gateway_id = aws_internet_gateway.my-igw.id

@@ -3,4 +3,9 @@ variable "env_prefix"{
   description = "ENVIRONMENT PREFIX"
 }
 
-variable "server_id" {}
+variable "instance_ids" {
+  description = "A list of EC2 instance IDs for which monitoring should be configured."
+  type        = list(string)
+}
+
+#variable "server_id" {}

@@ -31,9 +31,9 @@ resource "aws_security_group" "alb-sg" {
 
 # Register EC2 in Target Group
 resource "aws_lb_target_group_attachment" "web_attach" {
-  count          = length(var.server_id)
+  count          = length(var.instance_ids)
   target_group_arn = aws_lb_target_group.app-tg.arn
-  target_id        = var.server_id[count.index].id
+  target_id        = var.instance_ids[count.index]
   port             = 80
 } 
 
@@ -43,7 +43,7 @@ resource "aws_lb" "app-alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-sg.id]
-  subnets_id            = var.subnets_id[*].id
+  subnets_id            = var.subnet_id[*].id
 
   tags = {
     Name = "${var.env_prefix}-App-ALB"
@@ -95,7 +95,7 @@ resource "aws_lb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate_validation.cert_validation.certificate_arn
+  certificate_arn   = var.certificate_arn
 
   default_action {
     type             = "forward"

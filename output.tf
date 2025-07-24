@@ -4,7 +4,12 @@
 }*/ 
 #
 output "alb_dns" {
-  value = module.my-alb.alb_dns
+  value = module.my-alb.alb_dns_name
+}
+
+output "certval" {
+  description = "The ARN of the validated certificate (re-exported from my-dns module)."
+  value       = module.my-dns.validated_certificate_arn
 }
 
 output "cloudwatch_alarms_topic_arn" {
@@ -15,6 +20,11 @@ output "cloudwatch_alarms_topic_arn" {
 output "private_instance_ids" {
   description = "IDs of the private EC2 instances"
   value       = module.my-server.instances[*].id
+}
+
+output "private_instance_ids" {
+  description = "IDs of the private EC2 instances (re-exported from my-server module)."
+  value       = module.my-server.instance_ids_list # Echoing the output from my-server
 }
 
 output "website_url" {
@@ -28,4 +38,9 @@ output "route53_record_name" {
 output "name_servers" {
   value       = module.my-dns.name_servers.zone_id
   description = "Use these NS records in your domain registrar's dashboard"
+}
+
+output "private_instance_ids" {
+  description = "IDs of the private EC2 instances from the my-server module"
+  value       = module.my-server.instance_ids # Accessing the output of the 'my-server' child module
 }

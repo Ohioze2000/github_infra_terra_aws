@@ -5,25 +5,25 @@ resource "aws_route53_zone" "primary" {
 
 # Route 53 Hosted Zone
 resource "aws_route53_record" "root" {
-  zone_id = aws_route53_zone.primary.zone_id
+  zone_id = var.hosted_zone_id
   name    = var.domain_name
   type    = "A"
 
   alias {
-    name                   = var.alb_id.dns_name        # or aws_instance.web.public_dns
-    zone_id                = var.alb_id.zone_id        # ALB zone ID
+    name                   = var.alb_dns_name        # or aws_instance.web.public_dns
+    zone_id                = var.alb_zone_id        # ALB zone ID
     evaluate_target_health = true
   }
 }
 
 # Alias record for the www subdomain
 resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.primary.zone_id
+  zone_id = var.hosted_zone_id
   name    = "www.${var.domain_name}" # The www subdomain
   type    = "A"
   alias {
-    name                   = var.alb_id.dns_name
-    zone_id                = var.alb_id.dns_name
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
     evaluate_target_health = true
   }
   
@@ -32,7 +32,7 @@ resource "aws_route53_record" "www" {
 # Add DNS Validation Record
 resource "aws_route53_record" "cert_validation" {
   for_each = {
-    for dvo in vair.cert_id.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       type   = dvo.resource_record_type
       record = dvo.resource_record_value

@@ -29,7 +29,6 @@ module "my-subnet" {
   env_prefix = var.env_prefix
   az_count = var.az_count
   vpc_cidr_block = var.vpc_cidr_block
-  route_table_id = var.route_table_id
 }
 
 module "my-server" {
@@ -53,8 +52,10 @@ module "my-alb" {
   env_prefix = var.env_prefix
   vpc_id = aws_vpc.my-vpc.id
   my_ip = var.my_ip
-  server_id = var.server_id
-  subnet_id = var.subnets_id
+  #server_id = var.server_id
+  subnet_id = module.my-subnet.subnet.id
+  instance_ids = module.my-server.instance_ids
+  certificate_arn = module.my-dns.validated_certificate_arn 
 }
 
 module "my-dns" {
@@ -62,6 +63,8 @@ module "my-dns" {
   domain_name = var.domain_name
   alb_id = var.alb_id
   cert_id = var.cert_id
+  alb_dns_name    = module.my-alb.alb_dns_name
+  alb_zone_id     = module.my-alb.alb_hosted_zone_id
 }
 
 module "my-ssl" {
@@ -74,6 +77,7 @@ module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
   server_id = var.server_id
+  instance_ids = module.my-server.instance_ids_list
 }
 
 
