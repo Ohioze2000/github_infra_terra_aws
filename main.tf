@@ -70,7 +70,7 @@ module "my-dns" {
 module "my-ssl" {
   source = "./modules/ssl"
   domain_name = var.domain_name
-  certval_id = var.certval_id
+  #certval_id = var.certval_id
 }
 
 module "my-monitoring" {
