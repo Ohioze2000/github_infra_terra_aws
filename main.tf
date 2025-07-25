@@ -61,8 +61,9 @@ module "my-alb" {
 module "my-dns" {
   source = "./modules/dns"
   domain_name = var.domain_name
-  alb_id = var.alb_id
-  cert_id = var.cert_id
+  hosted_zone_id = var.hosted_zone_id
+  #alb_id = var.alb_id
+  #cert_id = var.cert_id
   alb_dns_name    = module.my-alb.alb_dns_name
   alb_zone_id     = module.my-alb.alb_hosted_zone_id
 }
@@ -76,7 +77,7 @@ module "my-ssl" {
 module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
-  server_id = var.server_id
+  #server_id = var.server_id
   instance_ids = module.my-server.instance_ids
 }
 
