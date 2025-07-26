@@ -8,6 +8,11 @@ variable "vpc_id" {}
 
 variable "my_ip" {}
 
+variable "subnet_ids" {
+  description = "A list of subnet IDs where the ALB will be deployed."
+  type        = list(string)
+}
+
 #variable "server_id" {}
 
 #variable "subnet_id" {}
