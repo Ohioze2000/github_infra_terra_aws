@@ -38,8 +38,10 @@ module "my-server" {
   az_count = var.az_count
   instance_type = var.instance_type
   env_prefix = var.env_prefix
-  subnet_id = module.my-subnet.subnet.id
+  private_subnet_ids = module.my-subnet.private_subnet_ids
+  #subnet_id = module.my-subnet.subnet.id
   image_name = var.image_name
+  alb_security_group_id = module.my-alb.alb_security_group_id
 }
 
 module "ec2_ssm_role-iam" {
@@ -53,15 +55,23 @@ module "my-alb" {
   vpc_id = aws_vpc.my-vpc.id
   my_ip = var.my_ip
   #server_id = var.server_id
-  subnet_id = module.my-subnet.subnet.id
+  subnet_ids = module.my-subnet.public_subnet_ids
   instance_ids = module.my-server.instance_ids
+  hosted_zone_id = module.my-dns.zone_id
+  domain_name    = module.my-dns.zone_name
   certificate_arn = module.my-dns.validated_certificate_arn 
 }
 
 module "my-dns" {
   source = "./modules/dns"
   domain_name = var.domain_name
+  env_prefix = var.env_prefix
+  public_subnet_ids      = module.my-subnet.public_subnet_ids
+  private_subnet_ids     = module.my-subnet.private_subnet_ids
   hosted_zone_id = var.hosted_zone_id
+  acm_domain_validation_options = module.my-ssl.domain_validation_options
+  certificate_arn               = module.my-ssl.certificate_arn
+  certificate_domain_name       = module.my-ssl.certificate_domain_name
   #alb_id = var.alb_id
   #cert_id = var.cert_id
   alb_dns_name    = module.my-alb.alb_dns_name
@@ -78,7 +88,7 @@ module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
   #server_id = var.server_id
-  instance_ids = module.my-server.instance_ids
+  private_instance_ids = module.my-server.private_instance_ids
 }
 
 

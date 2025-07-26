@@ -10,7 +10,7 @@ variable "my_ip" {}
 
 #variable "server_id" {}
 
-variable "subnet_id" {}
+#variable "subnet_id" {}
 
 variable "instance_ids" {
   description = "List of EC2 instance IDs to attach to the ALB target group"

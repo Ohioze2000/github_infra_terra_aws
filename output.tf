@@ -18,8 +18,8 @@ output "cloudwatch_alarms_topic_arn" {
 }
 
 output "private_instance_ids" {
-  description = "IDs of the private EC2 instances"
-  value       = module.my-server.instances[*].id
+  description = "IDs of the private EC2 instances deployed."
+  value       = module.my-server.private_instance_ids
 }
 
 #output "private_instance_ids" {
@@ -28,7 +28,7 @@ output "private_instance_ids" {
 #}
 
 output "website_url" {
-  value = module.my-dns.website_url
+  value = "https://${var.domain_name}"
 }
 
 output "route53_record_name" {
@@ -38,6 +38,21 @@ output "route53_record_name" {
 output "name_servers" {
   value       = module.my-dns.name_servers.zone_id
   description = "Use these NS records in your domain registrar's dashboard"
+}
+
+output "public_subnet_ids" {
+  description = "IDs of the public subnets."
+  value       = module.my-subnet.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  description = "IDs of the private subnets."
+  value       = module.my-subnet.private_subnet_ids
+}
+
+output "validated_certificate_arn" {
+  description = "The ARN of the validated ACM certificate."
+  value       = module.dns.validated_certificate_arn # Requires DNS module to output this
 }
 
 #output "private_instance_ids" {

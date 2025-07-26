@@ -52,43 +52,47 @@ resource "aws_route_table" "my-rtb" {
 }
 
 resource "aws_route_table_association" "my-rtb-sub-ass" {
-    count          = 1
+    count          = var.az_count
     subnet_id = aws_subnet.my-public-subnet-1[count.index].id
     route_table_id = aws_route_table.my-rtb.id
 }
 
 # Elastic IP for NAT Gateway
     resource "aws_eip" "nat" {
-    count = 1
+    count = var.az_count
+    vpc   = true
+    tags = { Name = "${var.env_prefix}-nat-eip-${count.index + 1}" }
 }
 
 # NAT Gateway
 resource "aws_nat_gateway" "my-nat" {
-  allocation_id = aws_eip.nat[0].id
-  subnet_id     = aws_subnet.my-public-subnet-1[0].id
+  count         = var.az_count
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.my-public-subnet-1[count.index].id
   depends_on    = [aws_internet_gateway.my-igw]
 
   tags = {
-    Name = "${var.env_prefix}-nat-gw"
+    {Name = "${var.env_prefix}-nat-gw-${count.index + 1}" }
   }
 }
 
 # Private Route Table
 resource "aws_route_table" "my-private-rtb" {
+  count  = var.az_count
   vpc_id = var.vpc_id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.my-nat.id
+    nat_gateway_id = aws_nat_gateway.my-nat[count.index].id
   }
 
   tags = {
-    Name = "${var.env_prefix}-private-rt"
+    {Name = "${var.env_prefix}-private-rt-${count.index + 1}" }
   }
 }
 
 resource "aws_route_table_association" "private" {
-  count          = 1
+  count          = var.az_count
   subnet_id      = aws_subnet.my-private-subnet-1[count.index].id
-  route_table_id = aws_route_table.my-private-rtb.id
+  route_table_id = aws_route_table.my-private-rtb[count.index].id
 }

@@ -23,3 +23,12 @@ variable "instance_type"{
 }
 
 variable "subnet_id" {}
+
+variable "alb_security_group_id" { # <-- New variable declared
+  description = "The ID of the ALB's security group to allow ingress from."
+  type        = string
+}
+
+variable "private_subnet_ids" { 
+  type = list(string) 
+}

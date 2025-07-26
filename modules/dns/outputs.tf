@@ -11,7 +11,7 @@ output "route53_record_name" {
 }
 
 output "name_servers" {
-  value       = aws_route53_zone.primary.zone_id
+  value       = aws_route53_zone.primary.name_servers
   description = "Use these NS records in your domain registrar's dashboard"
 }
 
@@ -22,4 +22,14 @@ output "route53-certval" {
 output "validated_certificate_arn" { # Using a clearer name for the output
   description = "The ARN of the validated ACM certificate."
   value       = aws_acm_certificate_validation.cert_validation.certificate_arn
+}
+
+output "zone_id" {
+  description = "The ID of the Route 53 Hosted Zone created by this module."
+  value       = aws_route53_zone.primary.zone_id
+}
+
+output "zone_name" {
+  description = "The name of the Route 53 Hosted Zone created by this module."
+  value       = aws_route53_zone.primary.name
 }

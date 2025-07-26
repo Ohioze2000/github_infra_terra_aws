@@ -43,7 +43,7 @@ resource "aws_lb" "app-alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb-sg.id]
-  subnets_id            = var.subnet_id[*].id
+  subnets            = var.subnet_ids 
 
   tags = {
     Name = "${var.env_prefix}-App-ALB"

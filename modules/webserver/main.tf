@@ -9,7 +9,8 @@ resource "aws_security_group" "ec2-sg" {
             from_port = 80
             to_port = 80
             protocol = "tcp"
-            security_groups = [var.security_groups.id]
+            security_groups = [var.alb_security_group_id]
+            description = "Allow HTTP from ALB"
         }
 
         egress {
@@ -18,6 +19,7 @@ resource "aws_security_group" "ec2-sg" {
             protocol = -1
             cidr_blocks = ["0.0.0.0/0"]
             prefix_list_ids = []
+            description = "Allow all outbound traffic"
         }
 
     tags = {
@@ -57,13 +59,13 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "my-server" {
 # The count here *must* match the count of your subnets
     count = var.az_count
-    
+    count = var.instance_count
     ami = data.aws_ami.ubuntu.id
     instance_type = var.instance_type
 
     associate_public_ip_address = false
     key_name = aws_key_pair.ssh-key.key_name
-    security_groups = [aws_security_group.ec2-sg.id]
+    #security_groups = [aws_security_group.ec2-sg.id]
     subnet_id     = var.subnet_id
     availability_zone           = local.selected_azs[count.index] # Use the filtered list of AZs
     iam_instance_profile = module.iam_profile.myapp-iam.name

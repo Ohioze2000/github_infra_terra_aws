@@ -11,3 +11,8 @@ output "alb_hosted_zone_id" {
   description = "The AWS-managed hosted zone ID for the ALB."
   value       = aws_lb.app-alb.zone_id
 }
+
+output "alb_security_group_id" {
+  description = "The ID of the Security Group attached to the ALB."
+  value       = aws_security_group.alb-sg.id # Assuming 'alb-sg' is the name of your ALB's SG resource
+}

@@ -1,11 +1,16 @@
 # Create Hosted Zone
 resource "aws_route53_zone" "primary" {
   name = var.domain_name
+
+  tags = {
+    Name        = "${var.env_prefix}-hosted-zone"
+    ManagedBy   = "Terraform"
+  }
 }
 
 # Route 53 Hosted Zone
 resource "aws_route53_record" "root" {
-  zone_id = var.hosted_zone_id
+  zone_id = aws_route53_zone.primary.zone_id
   name    = var.domain_name
   type    = "A"
 
@@ -18,7 +23,7 @@ resource "aws_route53_record" "root" {
 
 # Alias record for the www subdomain
 resource "aws_route53_record" "www" {
-  zone_id = var.hosted_zone_id
+  zone_id = aws_route53_zone.primary.zone_id
   name    = "www.${var.domain_name}" # The www subdomain
   type    = "A"
   alias {
@@ -32,7 +37,7 @@ resource "aws_route53_record" "www" {
 # Add DNS Validation Record
 resource "aws_route53_record" "cert_validation" {
   for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+    for dvo in var.acm_domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       type   = dvo.resource_record_type
       record = dvo.resource_record_value
@@ -40,8 +45,8 @@ resource "aws_route53_record" "cert_validation" {
   }
 
   zone_id = aws_route53_zone.primary.zone_id
-  name    = each.value.name
-  type    = each.value.type
+  name    = each.value.resource_record_name
+  type    = each.value.resource_record_type
   ttl     = 60
-  records = [each.value.record]
+  records = [each.value.resource_record_value]
 }
