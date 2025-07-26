@@ -88,7 +88,7 @@ module "my-monitoring" {
   source = "./modules/monitoring"
   env_prefix = var.env_prefix
   #server_id = var.server_id
-  private_instance_ids = module.my-server.private_instance_ids
+  instance_ids = module.my-server.private_instance_ids
 }
 
 
