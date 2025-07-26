@@ -59,7 +59,6 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "my-server" {
 # The count here *must* match the count of your subnets
     count = var.az_count
-    count = var.instance_count
     ami = data.aws_ami.ubuntu.id
     instance_type = var.instance_type
 

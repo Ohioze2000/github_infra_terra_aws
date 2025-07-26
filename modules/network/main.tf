@@ -61,7 +61,9 @@ resource "aws_route_table_association" "my-rtb-sub-ass" {
     resource "aws_eip" "nat" {
     count = var.az_count
     vpc   = true
-    tags = { Name = "${var.env_prefix}-nat-eip-${count.index + 1}" }
+    tags = { 
+      Name = "${var.env_prefix}-nat-eip-${count.index + 1}" 
+    }
 }
 
 # NAT Gateway
@@ -72,7 +74,7 @@ resource "aws_nat_gateway" "my-nat" {
   depends_on    = [aws_internet_gateway.my-igw]
 
   tags = {
-    {Name = "${var.env_prefix}-nat-gw-${count.index + 1}" }
+    Name = "${var.env_prefix}-nat-gw-${count.index + 1}" 
   }
 }
 
@@ -87,7 +89,7 @@ resource "aws_route_table" "my-private-rtb" {
   }
 
   tags = {
-    {Name = "${var.env_prefix}-private-rt-${count.index + 1}" }
+    Name = "${var.env_prefix}-private-rt-${count.index + 1}" 
   }
 }
 
