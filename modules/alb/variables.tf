@@ -12,6 +12,16 @@ variable "my_ip" {}
 
 #variable "subnet_id" {}
 
+variable "hosted_zone_id" {
+  description = "The ID of the Route 53 Hosted Zone where the ALB's DNS record will be created."
+  type        = string
+}
+
+variable "domain_name" {
+  description = "The root domain name (e.g., example.com) for the ALB's DNS record."
+  type        = string
+}
+
 variable "instance_ids" {
   description = "List of EC2 instance IDs to attach to the ALB target group"
   type        = list(string)
