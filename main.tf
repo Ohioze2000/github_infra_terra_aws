@@ -39,7 +39,7 @@ module "my-server" {
   instance_type = var.instance_type
   env_prefix = var.env_prefix
   private_subnet_ids = module.my-subnet.private_subnet_ids
-  #subnet_id = module.my-subnet.subnet.id
+  subnet_id = module.my-subnet.subnet.id
   image_name = var.image_name
   alb_security_group_id = module.my-alb.alb_security_group_id
 }
