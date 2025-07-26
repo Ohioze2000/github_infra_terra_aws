@@ -68,7 +68,7 @@ module "my-dns" {
   env_prefix = var.env_prefix
   public_subnet_ids      = module.my-subnet.public_subnet_ids
   private_subnet_ids     = module.my-subnet.private_subnet_ids
-  hosted_zone_id = var.hosted_zone_id
+  #hosted_zone_id = var.hosted_zone_id
   acm_domain_validation_options = module.my-ssl.domain_validation_options
   certificate_arn               = module.my-ssl.certificate_arn
   certificate_domain_name       = module.my-ssl.certificate_domain_name
