@@ -19,11 +19,6 @@ variable "alb_zone_id" {
   type        = string
 }
 
-variable "alb_zone_id" {
-  description = "The hosted zone ID of the ALB (for Route 53 Alias record)."
-  type        = string
-}
-
 variable "acm_domain_validation_options" {
   description = "Domain validation options from the ACM certificate for DNS record creation."
   # This type is complex; it's a list of objects.
