@@ -23,9 +23,9 @@ output "public_route_table_id" {
   value       = aws_route_table.my-rtb.id
 }
 
-output "private_route_table_id" {
-  description = "The ID of the private route table."
-  value       = aws_route_table.my-private-rtb.id
+output "private_route_table_ids" {
+  description = "The IDs of the private route table."
+  value       = aws_route_table.my-private-rtb[*].id
 }
 
 output "internet_gateway_id" {
@@ -33,9 +33,9 @@ output "internet_gateway_id" {
   value       = aws_internet_gateway.my-igw.id
 }
 
-output "nat_gateway_id" {
-  description = "The ID of the NAT Gateway."
-  value       = aws_nat_gateway.my-nat.id
+output "nat_gateway_ids" {
+  description = "The IDs of the NAT Gateway."
+  value       = aws_nat_gateway.my-nat[*].id
 }
 
 

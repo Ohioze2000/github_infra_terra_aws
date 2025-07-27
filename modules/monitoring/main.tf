@@ -10,7 +10,7 @@ resource "aws_sns_topic" "cloudwatch_alarms_topic" {
 
 #CloudWatch Alarm for Average CPU Utilization across all web servers ----
 resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
-  alarm_name          = "${var.env_prefix}-High-CPU-Utilization"
+  alarm_name          = "${var.env_prefix}-High-CPU-Utilization-${count.index + 1}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "CPUUtilization"
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
     count = length(var.instance_ids)
   # alarm_name = "${var.env_prefix}-High-CPU-Utilization-${count.index + 1}"
    dimensions = {
-    InstanceId = var.instance_ids[count.index].id
+    InstanceId = var.instance_ids[count.index]
    }
 
   actions_enabled     = true
@@ -41,7 +41,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
   ok_actions          = [aws_sns_topic.cloudwatch_alarms_topic.arn]
 
   tags = {
-    Name = "${var.env_prefix}-High-CPU-Alarm"
+    Name = "${var.env_prefix}-High-CPU-Alarm-${count.index + 1}"
   }
 }
 

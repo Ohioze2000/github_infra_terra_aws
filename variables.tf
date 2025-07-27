@@ -19,16 +19,19 @@ variable "instance_type"{
   type = string
   description = "INSTANCE TYPE"
 }
-variable "public_key_location"{
+variable "public_key_content"{
   type = string
-  description = "PUBLIC KEY LOCATION"
+  description = "The raw content of the public SSH key."
 }
 variable "domain_name"{
   description = "The root domain name to register (must already be registered with a registrar)"
   type        = string
 }
 
-variable "image_name" {}
+variable "image_name" {
+  type        = string  # <-- Added type declaration
+  description = "The AMI ID or name to use for the EC2 instances." # <-- Added a helpful description
+}
 
 #variable "server_id" {}
 

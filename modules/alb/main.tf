@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb-sg" {
-  name        = "alb-sg"
+  name        = "${var.env_prefix}-alb-sg"
   description = "Allow HTTP/HTTPS traffic"
   vpc_id      = var.vpc_id
 
@@ -7,14 +7,14 @@ resource "aws_security_group" "alb-sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [var.my_ip]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [var.my_ip]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -94,15 +94,11 @@ resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.app-alb.arn  # Associate with your Load Balancer
   port              = 443
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn   = var.certificate_arn
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app-tg.arn
-  }
-
-  tags = {
-    Name = "${var.env_prefix}-http-listener"
   }
 }

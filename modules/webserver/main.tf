@@ -38,8 +38,7 @@ locals {
 
 resource "aws_key_pair" "ssh-key" {
     key_name = "server-key"
-    public_key = var.public_key_location
-}
+    public_key = var.public_key_content # New: directly uses key content
 
 data "aws_ami" "ubuntu" {
   most_recent      = true
@@ -65,9 +64,9 @@ resource "aws_instance" "my-server" {
     associate_public_ip_address = false
     key_name = aws_key_pair.ssh-key.key_name
     #security_groups = [aws_security_group.ec2-sg.id]
-    subnet_id     = var.subnet_id
+    subnet_id           = var.private_subnet_ids[count.index]
     availability_zone           = local.selected_azs[count.index] # Use the filtered list of AZs
-    iam_instance_profile = module.iam_profile.myapp-iam.name
+    iam_instance_profile = var.iam_instance_profile_name
 
     vpc_security_group_ids = [aws_security_group.ec2-sg.id]
 

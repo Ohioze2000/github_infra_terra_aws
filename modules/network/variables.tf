@@ -12,6 +12,9 @@ variable "az_count" {
   type = number
 }
 
-variable "vpc_id" {}
+variable "vpc_id" {
+  type = string
+  description = "The ID of the VPC to which network resources will be attached."
+}
 
 

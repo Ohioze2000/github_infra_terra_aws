@@ -1,9 +1,16 @@
-output "instances" {
-    value = aws_instance.my-server
+output "instance_ids" {
+    value = aws_instance.my-server[*].id
+    description = "List of IDs for the created EC2 instances."
 }
 
-output "ec2-sgroup" {
-    value = aws_security_group.ec2-sg
+output "ec2_security_group_id" { # Renamed for clarity, outputs ID only
+  description = "The ID of the EC2 security group."
+  value       = aws_security_group.ec2-sg.id
+}
+
+output "ec2_security_group_name" { # Added for completeness
+  description = "The name of the EC2 security group."
+  value       = aws_security_group.ec2-sg.name
 }
 
 output "private_instance_ids" {
