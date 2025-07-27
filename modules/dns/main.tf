@@ -34,19 +34,29 @@ resource "aws_route53_record" "www" {
   
 }
 
+locals {
+   acm_validation_map = {
+    for dvo in var.acm_domain_validation_options : dvo.domain_name => dvo
+  }
+}
+
 # Add DNS Validation Record
 resource "aws_route53_record" "cert_validation" {
-  for_each = {
-    for dvo in var.acm_domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      type   = dvo.resource_record_type
-      record = dvo.resource_record_value
-    }
-  }
+#  for_each = {
+#   for dvo in var.acm_domain_validation_options : dvo.domain_name => {
+#      name   = dvo.resource_record_name
+#      type   = dvo.resource_record_type
+#      record = dvo.resource_record_value
+#  }
+
+for_each = local.acm_validation_map
 
   zone_id = aws_route53_zone.primary.zone_id
-  name    = each.value.name
-  type    = each.value.type
+#  name    = each.value.name
+#  type    = each.value.type
+  name    = each.value.resource_record_name
+  type    = each.value.resource_record_type
   ttl     = 60
-  records = [each.value.record]
+#  records = [each.value.record]
+  records = [each.value.resource_record_value]
 }
