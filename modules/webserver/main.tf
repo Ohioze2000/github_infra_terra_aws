@@ -39,6 +39,7 @@ locals {
 resource "aws_key_pair" "ssh-key" {
     key_name = "server-key"
     public_key = var.public_key_content # New: directly uses key content
+}    
 
 data "aws_ami" "ubuntu" {
   most_recent      = true
