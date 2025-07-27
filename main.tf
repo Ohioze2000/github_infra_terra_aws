@@ -59,6 +59,7 @@ module "my-server" {
 module "ec2_ssm_role-iam" {
   source = "./modules/iam"
   env_prefix = var.env_prefix
+  iam_instance_profile_name = "${var.env_prefix}-ec2-ssm-instance-profile"
 }
 
 module "my-alb" {
