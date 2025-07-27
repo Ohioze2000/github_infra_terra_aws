@@ -72,7 +72,8 @@ module "my-alb" {
   instance_ids = module.my-server.instance_ids
   #hosted_zone_id = module.my-dns.zone_id
   #domain_name    = module.my-dns.zone_name
-  certificate_arn = module.my-ssl.validated_certificate_arn 
+  #certificate_arn = module.my-ssl.validated_certificate_arn
+  certificate_arn = aws_acm_certificate_validation.cert_validation.certificate_arn 
 }
 
 module "my-dns" {
