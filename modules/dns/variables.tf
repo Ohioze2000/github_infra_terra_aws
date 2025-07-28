@@ -19,15 +19,15 @@ variable "alb_zone_id" {
   type        = string
 }
 
-variable "acm_domain_validation_options" {
-  description = "Domain validation options from the ACM certificate for DNS record creation."
-  type = list(object({
-    domain_name           = string
-    resource_record_name  = string
-    resource_record_type  = string
-    resource_record_value = string
-  }))
-}
+#variable "acm_domain_validation_options" {
+#  description = "Domain validation options from the ACM certificate for DNS record creation."
+#  type = list(object({
+#    domain_name           = string
+#    resource_record_name  = string
+#   resource_record_type  = string
+#    resource_record_value = string
+#  }))
+#}
 
 #variable "certificate_domain_name" {
 #  description = "The primary domain name of the ACM certificate."

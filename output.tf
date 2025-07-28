@@ -49,12 +49,12 @@ output "name_servers" {
 
 output "public_subnet_ids" {
   description = "IDs of the public subnets."
-  value       = module.my-subnet.public_subnet_ids
+  value       = module.my-network.public_subnet_ids
 }
 
 output "private_subnet_ids" {
   description = "IDs of the private subnets."
-  value       = module.my-subnet.private_subnet_ids
+  value       = module.my-network.private_subnet_ids
 }
 
 output "validated_certificate_arn" {

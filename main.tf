@@ -25,13 +25,14 @@ resource "aws_vpc" "my-vpc" {
 
 resource "aws_acm_certificate_validation" "cert_validation" {
    certificate_arn         = module.my-ssl.certificate_arn # Get ARN from SSL module
-   validation_record_fqdns = module.my-dns.validation_record_fqdns # Get FQDNs from DNS module
+   #validation_record_fqdns = module.my-dns.validation_record_fqdns # Get FQDNs from DNS module
+   validation_record_fqdns = [for rec in aws_route53_record.cert_validation_root : rec.fqdn]
 
    # Explicitly depend on the DNS records being created before attempting validation
    depends_on = [module.my-dns]
  }
 
-module "my-subnet" {
+module "my-network" {
   source = "./modules/network"
   vpc_id = aws_vpc.my-vpc.id
   env_prefix = var.env_prefix
@@ -48,7 +49,7 @@ module "my-server" {
   #public_key_path = var.public_key_path
   public_key_content = var.public_key_content
   env_prefix = var.env_prefix
-  private_subnet_ids = module.my-subnet.private_subnet_ids
+  private_subnet_ids = module.my-network.private_subnet_ids
   #subnet_id = module.my-subnet.subnet.id
   image_name = var.image_name
   alb_security_group_id = module.my-alb.alb_security_group_id
@@ -68,7 +69,7 @@ module "my-alb" {
   vpc_id = aws_vpc.my-vpc.id
   #my_ip = var.my_ip
   #server_id = var.server_id
-  subnet_ids = module.my-subnet.public_subnet_ids
+  subnet_ids = module.my-network.public_subnet_ids
   instance_ids = module.my-server.instance_ids
   #hosted_zone_id = module.my-dns.zone_id
   #domain_name    = module.my-dns.zone_name
@@ -83,7 +84,7 @@ module "my-dns" {
   #public_subnet_ids      = module.my-subnet.public_subnet_ids
   #private_subnet_ids     = module.my-subnet.private_subnet_ids
   #hosted_zone_id = var.hosted_zone_id
-  acm_domain_validation_options = module.my-ssl.domain_validation_options
+  #acm_domain_validation_options = module.my-ssl.domain_validation_options
   #certificate_arn               = module.my-ssl.certificate_arn
   #certificate_domain_name       = module.my-ssl.domain_name
   #alb_id = var.alb_id
@@ -104,6 +105,29 @@ module "my-monitoring" {
   env_prefix = var.env_prefix
   #server_id = var.server_id
   instance_ids = module.my-server.private_instance_ids
+}
+
+locals {
+  root_cert_validation_records = {
+    # Ensure module.my-ssl.domain_validation_options is correctly outputting
+    # the list of validation objects (domain_name, resource_record_name, type, value).
+    for dvo in module.my-ssl.domain_validation_options : dvo.domain_name => {
+      name    = dvo.resource_record_name
+      type    = dvo.resource_record_type
+      record  = dvo.resource_record_value
+      zone_id = module.my-dns.zone_id # Get zone_id from the DNS module output
+    }
+  }
+}
+
+resource "aws_route53_record" "cert_validation_root" {
+  for_each = local.root_cert_validation_records
+
+  zone_id = each.value.zone_id
+  name    = each.value.name
+  type    = each.value.type
+  ttl     = 60
+  records = [each.value.record]
 }
 
 

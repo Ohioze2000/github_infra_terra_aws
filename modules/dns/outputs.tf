@@ -33,7 +33,7 @@ output "zone_name" {
   value       = aws_route53_zone.primary.name
 }
 
-output "validation_record_fqdns" {
-  description = "The FQDNs of the DNS records created for ACM certificate validation."
-  value       = [for record_key, record_value in aws_route53_record.cert_validation : record_value.fqdn]
-}
+#output "validation_record_fqdns" {
+#  description = "The FQDNs of the DNS records created for ACM certificate validation."
+#  value       = [for record_key, record_value in aws_route53_record.cert_validation : record_value.fqdn]
+#}
