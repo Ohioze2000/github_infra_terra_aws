@@ -60,7 +60,7 @@ resource "aws_route_table_association" "my-rtb-sub-ass" {
 # Elastic IP for NAT Gateway
     resource "aws_eip" "nat" {
     count = var.az_count
-    vpc   = true
+    
     tags = { 
       Name = "${var.env_prefix}-nat-eip-${count.index + 1}" 
     }
